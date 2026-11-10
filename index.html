@@ -390,7 +390,7 @@ const MENU = [
         "rec": false
       },
       {
-        "name": "Ayam Cabai Garam / Saus Mentega",
+        "name": "Ayam Matah / Cabai Garam / Saus Mentega",
         "price": 28000,
         "desc": "",
         "img": "",
@@ -431,23 +431,9 @@ const MENU = [
         "rec": false
       },
       {
-        "name": "Crema Rapida",
-        "price": 26000,
-        "desc": "Strong espresso with condensed milk and syrup",
-        "img": "",
-        "rec": false
-      },
-      {
         "name": "Mont Blanc",
         "price": 28000,
         "desc": "Americano with citrus cloud on top",
-        "img": "",
-        "rec": false
-      },
-      {
-        "name": "Dirty Latte",
-        "price": 28000,
-        "desc": "Double ristretto with milk blend by Lucha",
         "img": "",
         "rec": false
       },
@@ -533,13 +519,6 @@ const MENU = [
         "rec": true
       },
       {
-        "name": "Popcorn Latte",
-        "price": 29000,
-        "desc": "Coffee milk with popcorn topping",
-        "img": "",
-        "rec": false
-      },
-      {
         "name": "Caramel Ciz Latte",
         "price": 29000,
         "desc": "Coffee milk with caramel syrup and cheese",
@@ -622,25 +601,11 @@ const MENU = [
         "rec": false
       },
       {
-        "name": "Choco Cinnamon",
-        "price": 24000,
-        "desc": "Chocolate with cinnamon syrup",
-        "img": "",
-        "rec": false
-      },
-      {
         "name": "Choco Praline",
         "price": 24000,
         "desc": "Choco milk with pecan praline syrup",
         "img": "",
         "rec": true
-      },
-      {
-        "name": "Choco Orange",
-        "price": 24000,
-        "desc": "Choco milk with orange",
-        "img": "",
-        "rec": false
       },
       {
         "name": "Old Fashioned",
@@ -726,6 +691,13 @@ function heroFor(cat) { return ACCENTS[(CAT_ACCENTS[cat.id] || FALLBACK_ACCENTS)
 const EXPAND_MENU = false;
 
 const rupiah = n => "Rp" + n.toLocaleString("id-ID");
+
+/* Kenaikan harga: semua harga naik PRICE_RISE rupiah mulai tanggal PRICE_RISE_FROM (waktu WIB).
+   Mau langsung berlaku sekarang? Ganti PRICE_RISE_FROM jadi "2000-01-01". Mau batal? Ganti PRICE_RISE jadi 0. */
+const PRICE_RISE = 1000;
+const PRICE_RISE_FROM = "2027-02-01";
+const todayWIB = new Date(Date.now() + 7 * 3600 * 1000).toISOString().slice(0, 10);
+const priceOf = it => it.price + (todayWIB >= PRICE_RISE_FROM ? PRICE_RISE : 0);
 const $ = id => document.getElementById(id);
 const esc = s => s.replace(/[&<>]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
 
@@ -760,7 +732,7 @@ function renderList() {
       li.querySelector(".name").textContent = it.name;
       if (it.rec) { const b = document.createElement("span"); b.className = "rec"; b.textContent = "Rekomendasi"; li.querySelector(".name").appendChild(b); }
       const dd = li.querySelector(".idesc"); if (it.desc) { dd.textContent = it.desc; dd.hidden = false; }
-      li.querySelector(".price").textContent = rupiah(it.price);
+      li.querySelector(".price").textContent = rupiah(priceOf(it));
       ul.appendChild(li);
       return;
     }
@@ -774,7 +746,7 @@ function renderList() {
         <div class="card"><img alt="" loading="lazy"><p></p></div>
       </div></div>`;
     li.querySelector(".name").textContent = it.name;
-    li.querySelector(".price").textContent = rupiah(it.price);
+    li.querySelector(".price").textContent = rupiah(priceOf(it));
     const img = li.querySelector("img");
     const acc = accentFor(cat, it, i);
     img.src = it.img || acc.src;
