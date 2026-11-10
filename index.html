@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#fd751f">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="St. Lucha">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<title>Menu St. Lucha</title>
+<style>
+  @font-face { font-family: "Rubik"; font-style: italic; font-weight: 900; font-display: swap; src: url("fonts/rubik-latin-900-italic.woff2") format("woff2"); }
+  @font-face { font-family: "Figtree"; font-style: normal; font-weight: 400; font-display: swap; src: url("fonts/figtree-latin-400-normal.woff2") format("woff2"); }
+  @font-face { font-family: "Figtree"; font-style: normal; font-weight: 500; font-display: swap; src: url("fonts/figtree-latin-500-normal.woff2") format("woff2"); }
+  @font-face { font-family: "Figtree"; font-style: normal; font-weight: 600; font-display: swap; src: url("fonts/figtree-latin-600-normal.woff2") format("woff2"); }
+  @font-face { font-family: "Figtree"; font-style: normal; font-weight: 700; font-display: swap; src: url("fonts/figtree-latin-700-normal.woff2") format("woff2"); }
+  /* Tema: orange St. Lucha, retro diner. Sidebar orange dengan logo, strip kotak-kotak seperti poster IG, judul italic tebal. */
+  :root {
+    --orange: #fd751f;
+    --ink: #1b1511;
+    --navy: #232a6e;
+    --bg: #ffffff;
+    --panel: #fff3ea;
+    --text: #1b1511;
+    --muted: #6b5d52;
+    --line: #ecdccf;
+    --price: #232a6e;
+    --font-display: "Rubik", "Arial Black", system-ui, sans-serif;
+    --font-body: "Figtree", system-ui, sans-serif;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #15100c; --panel: #221a13; --text: #f6eee7; --muted: #b8a999;
+      --line: #3a2d22; --price: #aab3ff; color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #15100c; --panel: #221a13; --text: #f6eee7; --muted: #b8a999;
+    --line: #3a2d22; --price: #aab3ff; color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100%; }
+  body { background: var(--bg); color: var(--text); font-family: var(--font-body); font-size: 16px; line-height: 1.45; }
+  button { font: inherit; color: inherit; }
+  :focus-visible { outline: 3px solid var(--navy); outline-offset: 2px; }
+  .side :focus-visible { outline-color: var(--ink); }
+
+  .app { display: grid; grid-template-columns: 260px minmax(0, 1fr); min-height: 100vh; }
+
+  /* Sidebar */
+  .side {
+    position: sticky; top: 0; align-self: start; height: 100vh;
+    background: var(--orange); color: var(--ink);
+    padding: 24px 16px; display: flex; flex-direction: column; gap: 22px; overflow-y: auto;
+  }
+  .logo { display: block; width: 100%; max-width: 210px; height: auto; margin: 0 4px; }
+  .tag { margin: 0 4px; font-weight: 600; font-size: 14px; line-height: 1.35; }
+  .tag span { display: block; font-weight: 500; opacity: .85; }
+  .cats { display: flex; flex-direction: column; gap: 4px; }
+  .cat {
+    display: flex; justify-content: space-between; align-items: center; gap: 8px;
+    padding: 10px 12px; border: 0; border-radius: 8px; background: transparent;
+    text-align: left; cursor: pointer; font-weight: 700;
+  }
+  .cat:hover { background: rgba(255, 255, 255, .3); }
+  .cat[aria-current="true"] { background: var(--ink); color: #fff; }
+  .cat .n {
+    min-width: 26px; padding: 1px 8px; border-radius: 99px; text-align: center;
+    background: #fff; color: var(--ink); font-size: 12px; font-weight: 700; font-variant-numeric: tabular-nums;
+  }
+
+  /* Main */
+  .checker {
+    height: 18px;
+    background: conic-gradient(var(--orange) 25%, #fff 0 50%, var(--orange) 0 75%, #fff 0) 0 0 / 36px 36px;
+  }
+  .main { width: 100%; max-width: 860px; }
+  .content { padding: 32px clamp(16px, 4vw, 56px) 64px; }
+  .content h1 {
+    font-family: var(--font-display); font-style: italic; font-weight: 900; letter-spacing: -0.01em;
+    font-size: clamp(34px, 5vw, 56px); line-height: 1; margin: 0 0 6px; text-wrap: balance;
+  }
+  .content .sub { margin: 0 0 24px; color: var(--muted); font-weight: 500; }
+
+  .list { list-style: none; margin: 0; padding: 0; border-top: 2px solid var(--text); }
+  .item { border-bottom: 1px solid var(--line); }
+  .row {
+    width: 100%; display: flex; align-items: baseline; gap: 12px;
+    padding: 16px 4px; border: 0; background: transparent; cursor: pointer; text-align: left;
+  }
+  .row:hover .name { color: var(--orange); }
+  .row[aria-expanded="true"] .name { color: var(--orange); }
+  .name { font-weight: 700; font-size: 17px; }
+  .dots { flex: 1; border-bottom: 2px dotted var(--orange); opacity: .55; transform: translateY(-4px); min-width: 16px; }
+  .price { font-variant-numeric: tabular-nums; font-weight: 700; color: var(--price); white-space: nowrap; }
+  .chev {
+    width: 10px; height: 10px; margin-left: 4px; flex: none;
+    border-right: 3px solid var(--orange); border-bottom: 3px solid var(--orange);
+    transform: translateY(-3px) rotate(45deg); transition: transform .2s;
+  }
+  .row[aria-expanded="true"] .chev { transform: translateY(1px) rotate(-135deg); }
+
+  .detail { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .25s ease; }
+  .detail[data-open="true"] { grid-template-rows: 1fr; }
+  .detail > div { overflow: hidden; }
+  .card { display: flex; gap: 20px; padding: 4px 4px 20px; align-items: flex-start; }
+  .card img { width: 260px; max-width: 45%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 12px; background: var(--panel); border: 2px solid var(--text); }
+  .card p { margin: 0; color: var(--muted); max-width: 44ch; }
+
+  
+  @media (prefers-reduced-motion: reduce) {
+    .detail, .chev { transition: none; }
+  }
+
+  /* ===== Game promo ===== */
+  .play-btn {
+    margin-top: auto; padding: 12px 14px; border: 2px solid var(--ink); border-radius: 12px;
+    background: var(--navy); color: #fff; font-weight: 800; text-align: left; cursor: pointer; line-height: 1.2;
+  }
+  .play-btn small { display: block; font-weight: 500; opacity: .85; margin-top: 2px; }
+  .play-btn:hover { background: var(--ink); }
+
+  dialog.game {
+    padding: 0; border: 3px solid var(--text); border-radius: 16px; background: var(--bg); color: var(--text);
+    width: min(560px, calc(100vw - 24px)); max-height: calc(100dvh - 24px); overflow: auto;
+  }
+  dialog.game::backdrop { background: rgba(27, 21, 17, .65); }
+  .g-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 14px 16px 4px; }
+  .g-head h2 { margin: 0; font-family: var(--font-display); font-style: italic; font-weight: 900; font-size: 26px; line-height: 1.1; }
+  .g-close {
+    flex: none; width: 40px; height: 40px; border: 2px solid var(--text); border-radius: 10px;
+    background: transparent; font-size: 22px; line-height: 1; cursor: pointer;
+  }
+  .g-tabs { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px 16px 4px; }
+  .g-tab {
+    padding: 8px 14px; border: 2px solid var(--text); border-radius: 99px; background: transparent;
+    font-weight: 700; cursor: pointer;
+  }
+  .g-tab[aria-pressed="true"] { background: var(--orange); color: var(--ink); }
+  .g-body { padding: 10px 16px 20px; }
+  .g-help { margin: 0 0 12px; color: var(--muted); }
+  .g-canvas {
+    display: block; width: 100%; max-width: 440px; margin: 0 auto; aspect-ratio: 1;
+    background: var(--panel); border: 2px solid var(--text); border-radius: 12px; touch-action: none; cursor: crosshair;
+  }
+  .sw-display {
+    padding: 28px 0; text-align: center; background: var(--panel); border: 2px solid var(--text); border-radius: 12px;
+    font-family: var(--font-display); font-style: italic; font-weight: 900; font-size: 64px; font-variant-numeric: tabular-nums; line-height: 1;
+  }
+  .g-btn {
+    display: block; width: 100%; margin-top: 12px; padding: 14px; border: 2px solid var(--ink); border-radius: 12px;
+    background: var(--orange); color: var(--ink); font-weight: 800; font-size: 17px; cursor: pointer;
+  }
+  .g-btn:hover { filter: brightness(.95); }
+  .g-result { margin-top: 14px; padding: 14px; border: 2px solid var(--text); border-radius: 12px; }
+  .g-result[hidden] { display: none; }
+  .g-result.win { background: var(--orange); color: var(--ink); border-color: var(--ink); }
+  .g-result h3 { margin: 0 0 4px; font-family: var(--font-display); font-style: italic; font-weight: 900; font-size: 26px; line-height: 1.1; }
+  .g-result p { margin: 0 0 6px; }
+  .g-result .g-btn { background: var(--ink); color: #fff; margin-top: 8px; }
+
+  
+
+  /* Game: Urutan Angka */
+  .o-bar { height: 12px; margin: 0 auto 10px; max-width: 440px; border: 2px solid var(--text); border-radius: 99px; overflow: hidden; background: var(--panel); }
+  .o-bar span { display: block; width: 100%; height: 100%; background: var(--orange); }
+  .o-status { margin: 0 auto 10px; max-width: 440px; font-weight: 700; }
+  .o-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; max-width: 440px; margin: 0 auto; }
+  .o-grid > * { aspect-ratio: 1; }
+  .o-empty { border: 2px dashed var(--line); border-radius: 12px; }
+  .o-cell {
+    border: 2px solid var(--ink); border-radius: 12px; background: var(--orange); color: var(--ink); cursor: pointer;
+    font-family: var(--font-display); font-style: italic; font-weight: 900; font-size: clamp(22px, 6vw, 32px); padding: 0;
+  }
+  .o-cell.hid { background: var(--navy); color: #fff; }
+  .o-cell.bad { background: #fff; outline: 4px solid var(--ink); }
+
+  /* Foto aksen */
+  .hero { position: relative; margin: 0 0 14px; aspect-ratio: 16 / 6; max-height: 260px; width: 100%; overflow: hidden; border: 2px solid var(--text); border-radius: 14px; background: var(--panel); }
+  .hero img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(27, 21, 17, .78), rgba(27, 21, 17, 0) 62%); pointer-events: none; }
+  .content .hero h1 { position: absolute; z-index: 1; left: 18px; bottom: 12px; right: 18px; margin: 0; color: #fff; text-shadow: 0 2px 10px rgba(0, 0, 0, .45); }
+  .card img.poster { aspect-ratio: 4 / 5; width: 220px; }
+  @media (max-width: 720px) {
+    .hero { aspect-ratio: 16 / 8; }
+    .card img.poster { width: min(100%, 260px); }
+  }
+  .row.static { cursor: default; }
+  .row.static:hover .name { color: inherit; }
+
+  /* Layar sempit (portrait): sidebar tetap di kiri, hanya diperkecil */
+  @media (max-width: 720px) {
+    .app { grid-template-columns: clamp(112px, 30vw, 172px) minmax(0, 1fr); }
+    .side { padding: 16px 10px; gap: 16px; }
+    .logo { max-width: 100%; margin: 0; }
+    .tag { display: none; }
+    .cat { padding: 9px 10px; font-size: 14px; }
+    .cat .n { display: none; }
+    .play-btn { position: static; transform: none; margin-top: auto; padding: 10px; border-radius: 12px; font-size: 13px; white-space: normal; box-shadow: none; }
+    .play-btn small { display: none; }
+    .content { padding: 18px 14px 40px; }
+    .hero { aspect-ratio: 16 / 9; }
+    .content .hero h1 { left: 12px; bottom: 8px; right: 12px; font-size: clamp(24px, 7vw, 34px); }
+    .row { gap: 8px; padding: 14px 2px; }
+    .name { font-size: 15px; }
+    .price { font-size: 14px; }
+    .dots { min-width: 8px; }
+    .sw-display { font-size: 52px; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="side">
+    <img class="logo" src="icons/logo.png" alt="St. Lucha Coffee">
+    <p class="tag">Pick it up, Push it up.<span>Buka 11.00 sampai 00.00</span></p>
+    <nav class="cats" id="cats" aria-label="Kategori menu"></nav>
+    <button class="play-btn" id="playBtn" type="button">Main Game, Dapat Diskon<small>Menang? Tunjukkan ke kasir</small></button>
+  </aside>
+  <div class="main">
+    <div class="checker" aria-hidden="true"></div>
+    <main class="content">
+      <div class="hero"><img id="heroImg" alt="" aria-hidden="true"><h1 id="title"></h1></div>
+      <p class="sub" id="sub"></p>
+      <ul class="list" id="list"></ul>
+    </main>
+  </div>
+</div>
+
+<dialog class="game" id="gameDlg" aria-labelledby="gTitle">
+  <div class="checker" aria-hidden="true"></div>
+  <div class="g-head">
+    <h2 id="gTitle">Main Game, Dapat Diskon</h2>
+    <button class="g-close" id="gClose" type="button" aria-label="Tutup">&times;</button>
+  </div>
+  <div class="g-tabs" id="gTabs" role="group" aria-label="Pilih game"></div>
+  <div class="g-body">
+    <p class="g-help" id="gHelp"></p>
+    <div id="gStage"></div>
+    <div class="g-result" id="gResult" role="status" aria-live="polite" hidden></div>
+  </div>
+</dialog>
+
+<script>
+/* ===== DATA MENU: ganti isi bagian ini saja =====
+   img: isi dengan alamat foto (mis. "foto/americano.jpg") atau data URI.
+   Kalau kosong, otomatis tampil gambar pengganti. */
+const MENU = [
+  {
+    "id": "burger",
+    "name": "Burger",
+    "items": [
+      {
+        "img": "",
+        "desc": "",
+        "name": "Ciz in",
+        "price": 48000
+      },
+      {
+        "img": "",
+        "desc": "",
+        "name": "Double Trouble",
+        "price": 48000
+      },
+      {
+        "img": "",
+        "desc": "",
+        "name": "The Essential",
+        "price": 38000
+      },
+      {
+        "img": "",
+        "desc": "",
+        "name": "Slider dos",
+        "price": 39000
+      },
+      {
+        "img": "",
+        "desc": "",
+        "name": "Slider uno",
+        "price": 24000
+      },
+      {
+        "img": "",
+        "desc": "",
+        "name": "Slider Quatros",
+        "price": 72000
+      },
+      {
+        "img": "",
+        "desc": "",
+        "name": "Slider Tres",
+        "price": 55000
+      }
+    ]
+  },
+  {
+    "id": "snack",
+    "name": "Snack",
+    "items": [
+      {
+        "img": "",
+        "desc": "",
+        "name": "Bolognese fries",
+        "price": 26000
+      },
+      {
+        "img": "",
+        "desc": "",
+        "name": "Chili mayo fries",
+        "price": 28000
+      },
+      {
+        "img": "",
+        "desc": "",
+        "name": "Mentai fries",
+        "price": 28000
+      },
+      {
+        "img": "",
+        "desc": "",
+        "name": "Signature fries",
+        "price": 29000
+      },
+      {
+        "img": "",
+        "desc": "",
+        "name": "Tahu Cabai Garam",
+        "price": 21000
+      },
+      {
+        "img": "",
+        "desc": "",
+        "name": "Triple Cheese",
+        "price": 30000
+      },
+      {
+        "img": "",
+        "desc": "",
+        "name": "French Fries",
+        "price": 21000
+      },
+      {
+        "img": "",
+        "desc": "",
+        "name": "MIx Platter",
+        "price": 29000
+      }
+    ]
+  },
+  {
+    "id": "heavy-meal",
+    "name": "Heavy Meal",
+    "items": [
+      {
+        "img": "",
+        "desc": "",
+        "name": "Nasi Goreng St.lucha",
+        "price": 25000
+      },
+      {
+        "img": "",
+        "desc": "",
+        "name": "Mentai Rice",
+        "price": 28000
+      },
+      {
+        "img": "",
+        "desc": "",
+        "name": "Ayam Cabai Garam",
+        "price": 25000
+      },
+      {
+        "img": "",
+        "desc": "",
+        "name": "Ayam Matah",
+        "price": 25000
+      },
+      {
+        "img": "",
+        "desc": "",
+        "name": "Ayam Mentega",
+        "price": 25000
+      },
+      {
+        "img": "",
+        "desc": "",
+        "name": "CheeseCake",
+        "price": 32000
+      }
+    ]
+  },
+  {
+    "id": "coffee",
+    "name": "Coffee",
+    "items": [
+      {
+        "img": "",
+        "desc": "",
+        "name": "Americano",
+        "price": 18000
+      },
+      {
+        "img": "",
+        "desc": "",
+        "name": "Americano Cloud Guava",
+        "price": 27000
+      },
+      {
+        "img": "",
+        "desc": "",
+        "name": "Americano Cloud Osmanthus",
+        "price": 27000
+      },
+      {
+        "img": "",
+        "desc": "",
+        "name": "Americano Cloud Peach",
+        "price": 27000
+      },
+      {
+        "img": "",
+        "desc": "",
+        "name": "Banana Coffee Latte",
+        "price": 26000
+      },
+      {
+        "img": "",
+        "desc": "",
+        "name": "Cappuccino",
+        "price": 24000
+      },
+      {
+        "img": "",
+        "desc": "",
+        "name": "Caramel Ciz Latte",
+        "price": 29000
+      },
+      {
+        "img": "",
+        "desc": "",
+        "name": "Espresso",
+        "price": 18000
+      },
+      {
+        "img": "",
+        "desc": "",
+        "name": "Fruity Americano Romano",
+        "price": 24000
+      },
+      {
+        "img": "",
+        "desc": "",
+        "name": "Hazelnut Coffee Cream",
+        "price": 27000
+      },
+      {
+        "img": "",
+        "desc": "",
+        "name": "Latte",
+        "price": 24000
+      },
+      {
+        "img": "",
+        "desc": "",
+        "name": "Magic Latte",
+        "price": 25000
+      },
+      {
+        "img": "",
+        "desc": "",
+        "name": "Mont Blanc",
+        "price": 28000
+      },
+      {
+        "img": "",
+        "desc": "",
+        "name": "Americano Cloud Berry",
+        "price": 27000
+      },
+      {
+        "img": "",
+        "desc": "",
+        "name": "Forte Latte",
+        "price": 26000
+      },
+      {
+        "img": "",
+        "desc": "",
+        "name": "Fruity Americano Berry",
+        "price": 24000
+      },
+      {
+        "img": "",
+        "desc": "",
+        "name": "Fruity Americano Guava",
+        "price": 24000
+      },
+      {
+        "img": "",
+        "desc": "",
+        "name": "Fruity Americano Peach",
+        "price": 24000
+      },
+      {
+        "img": "",
+        "desc": "",
+        "name": "Luchas",
+        "price": 26000
+      },
+      {
+        "img": "",
+        "desc": "",
+        "name": "Saints",
+        "price": 24000
+      },
+      {
+        "img": "",
+        "desc": "",
+        "name": "Scotch",
+        "price": 25000
+      },
+      {
+        "img": "",
+        "desc": "",
+        "name": "Fridge cigarette",
+        "price": 24000
+      },
+      {
+        "img": "",
+        "desc": "",
+        "name": "Extra Shot",
+        "price": 5000
+      }
+    ]
+  },
+  {
+    "id": "non-coffee",
+    "name": "Non Coffee",
+    "items": [
+      {
+        "img": "",
+        "desc": "",
+        "name": "Banana Butterscotch",
+        "price": 25000
+      },
+      {
+        "img": "",
+        "desc": "",
+        "name": "Barry",
+        "price": 27000
+      },
+      {
+        "img": "",
+        "desc": "",
+        "name": "Choco Berry",
+        "price": 26000
+      },
+      {
+        "img": "",
+        "desc": "",
+        "name": "Choco Cinnamon",
+        "price": 24000
+      },
+      {
+        "img": "",
+        "desc": "",
+        "name": "Choco Classic",
+        "price": 24000
+      },
+      {
+        "img": "",
+        "desc": "",
+        "name": "Choco Orange",
+        "price": 24000
+      },
+      {
+        "img": "",
+        "desc": "",
+        "name": "Choco Praline",
+        "price": 24000
+      },
+      {
+        "img": "",
+        "desc": "",
+        "name": "Matcha Latte",
+        "price": 25000
+      },
+      {
+        "img": "",
+        "desc": "",
+        "name": "Piscok",
+        "price": 24000
+      },
+      {
+        "img": "",
+        "desc": "",
+        "name": "Pisgor",
+        "price": 24000
+      },
+      {
+        "img": "",
+        "desc": "",
+        "name": "Strawberry Ciz",
+        "price": 25000
+      },
+      {
+        "img": "",
+        "desc": "",
+        "name": "Yasmin",
+        "price": 25000
+      },
+      {
+        "img": "",
+        "desc": "",
+        "name": "Mineral water",
+        "price": 6000
+      },
+      {
+        "img": "",
+        "desc": "",
+        "name": "Coke",
+        "price": 4000
+      }
+    ]
+  },
+  {
+    "id": "freshness",
+    "name": "Freshness",
+    "items": [
+      {
+        "img": "",
+        "desc": "",
+        "name": "Spark Berry",
+        "price": 21000
+      },
+      {
+        "img": "",
+        "desc": "",
+        "name": "Spark Jasmine",
+        "price": 21000
+      },
+      {
+        "img": "",
+        "desc": "",
+        "name": "Spark Lemon",
+        "price": 21000
+      },
+      {
+        "img": "",
+        "desc": "",
+        "name": "Spark Peach",
+        "price": 21000
+      },
+      {
+        "img": "",
+        "desc": "",
+        "name": "Spark Vanilla",
+        "price": 21000
+      },
+      {
+        "img": "",
+        "desc": "",
+        "name": "Old Fashioned",
+        "price": 22000
+      }
+    ]
+  },
+  {
+    "id": "tea",
+    "name": "Tea",
+    "items": [
+      {
+        "img": "",
+        "desc": "",
+        "name": "Ice Tea Berry",
+        "price": 18000
+      },
+      {
+        "img": "",
+        "desc": "",
+        "name": "Ice Tea Lemon",
+        "price": 18000
+      },
+      {
+        "img": "",
+        "desc": "",
+        "name": "Ice Tea Peach",
+        "price": 18000
+      },
+      {
+        "img": "",
+        "desc": "",
+        "name": "Ice Tea Vanilla",
+        "price": 18000
+      }
+    ]
+  }
+];
+/* ===== akhir data ===== */
+
+/* ===== FOTO AKSEN: dipakai sebagai banner kategori dan isi panel menu yang dibuka.
+   Menu yang punya img sendiri di data MENU akan memakai foto itu. ===== */
+const ACCENTS = [
+  {
+    "src": "foto/aksen-1.jpg",
+    "pos": "50% 55%"
+  },
+  {
+    "src": "foto/aksen-2.jpg",
+    "pos": "50% 50%"
+  },
+  {
+    "src": "foto/aksen-3.jpg",
+    "pos": "50% 45%"
+  },
+  {
+    "src": "foto/aksen-4.jpg",
+    "pos": "50% 55%",
+    "forItem": "triple cheese"
+  },
+  {
+    "src": "foto/aksen-5.jpg",
+    "pos": "50% 52%"
+  },
+  {
+    "src": "foto/aksen-6.jpg",
+    "pos": "50% 48%"
+  },
+  {
+    "src": "foto/aksen-7.jpg",
+    "pos": "50% 55%"
+  },
+  {
+    "src": "foto/aksen-8.jpg",
+    "pos": "50% 55%"
+  }
+];
+const CAT_ACCENTS = { "burger": [1, 0], "snack": [2], "heavy-meal": [0], "coffee": [4, 5], "non-coffee": [6, 7], "freshness": [7, 6], "tea": [5, 4] };
+const FALLBACK_ACCENTS = [1, 2, 4, 6];
+const OFFSET = Math.floor(Math.random() * 10);
+function accentFor(cat, it, i) {
+  const special = ACCENTS.find(a => a.forItem && a.forItem === it.name.trim().toLowerCase());
+  if (special) return special;
+  const list = CAT_ACCENTS[cat.id] || FALLBACK_ACCENTS;
+  return ACCENTS[list[(i + OFFSET) % list.length]];
+}
+function heroFor(cat) { return ACCENTS[(CAT_ACCENTS[cat.id] || FALLBACK_ACCENTS)[0]]; }
+
+/* Ubah ke true kalau baris menu ingin bisa dibuka (menampilkan foto). */
+const EXPAND_MENU = false;
+
+const rupiah = n => "Rp" + n.toLocaleString("id-ID");
+const $ = id => document.getElementById(id);
+const esc = s => s.replace(/[&<>]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
+
+let current = MENU[0].id;
+
+function renderCats() {
+  $("cats").innerHTML = "";
+  MENU.forEach(c => {
+    const b = document.createElement("button");
+    b.className = "cat";
+    b.type = "button";
+    b.setAttribute("aria-current", c.id === current ? "true" : "false");
+    b.innerHTML = `<span>${esc(c.name)}</span><span class="n">${c.items.length}</span>`;
+    b.addEventListener("click", () => select(c.id));
+    $("cats").appendChild(b);
+  });
+}
+
+function renderList() {
+  const cat = MENU.find(c => c.id === current);
+  $("title").textContent = cat.name;
+  const h = heroFor(cat);
+  $("heroImg").src = h.src; $("heroImg").style.objectPosition = h.pos;
+  $("sub").textContent = cat.items.length + " menu" + (EXPAND_MENU ? ". Ketuk menu untuk melihat foto." : "");
+  const ul = $("list");
+  ul.innerHTML = "";
+  cat.items.forEach((it, i) => {
+    const li = document.createElement("li");
+    li.className = "item";
+    if (!EXPAND_MENU) {
+      li.innerHTML = `<div class="row static"><span class="name"></span><span class="dots" aria-hidden="true"></span><span class="price"></span></div>`;
+      li.querySelector(".name").textContent = it.name;
+      li.querySelector(".price").textContent = rupiah(it.price);
+      ul.appendChild(li);
+      return;
+    }
+    const pid = "d-" + cat.id + "-" + i;
+    li.innerHTML = `
+      <button class="row" type="button" aria-expanded="false" aria-controls="${pid}">
+        <span class="name"></span><span class="dots" aria-hidden="true"></span>
+        <span class="price"></span><span class="chev" aria-hidden="true"></span>
+      </button>
+      <div class="detail" id="${pid}" data-open="false"><div>
+        <div class="card"><img alt="" loading="lazy"><p></p></div>
+      </div></div>`;
+    li.querySelector(".name").textContent = it.name;
+    li.querySelector(".price").textContent = rupiah(it.price);
+    const img = li.querySelector("img");
+    const acc = accentFor(cat, it, i);
+    img.src = it.img || acc.src;
+    img.style.objectPosition = it.img ? "50% 50%" : acc.pos;
+    img.alt = it.img ? "Foto " + it.name : "";
+    if (!it.img && acc.forItem) img.classList.add("poster");
+    const dp = li.querySelector("p");
+    dp.textContent = it.desc || "";
+    dp.hidden = !it.desc;
+    const row = li.querySelector(".row"), det = li.querySelector(".detail");
+    row.addEventListener("click", () => {
+      const open = row.getAttribute("aria-expanded") === "true";
+      row.setAttribute("aria-expanded", String(!open));
+      det.dataset.open = String(!open);
+    });
+    ul.appendChild(li);
+  });
+}
+
+function select(id) {
+  current = id;
+  history.replaceState(null, "", "#" + id);
+  renderCats();
+  renderList();
+  window.scrollTo({ top: 0 });
+}
+
+function fromHash() {
+  const h = location.hash.slice(1);
+  if (MENU.some(c => c.id === h)) current = h;
+  renderCats();
+  renderList();
+}
+window.addEventListener("hashchange", fromHash);
+fromHash();
+
+/* ===== GAME PROMO =====
+   Ubah angka di CONFIG untuk mengatur tingkat kesulitan. Pemenang hanya diminta menunjukkan layar ke kasir. */
+const CONFIG = {
+  promoName: "diskon games",
+  stopwatch: { targetSec: 7, hideAfterSec: 2, tolSec: 0.10 },
+  cut: { tolPct: 4 },
+  order: { count: 10, studySec: 4 }
+};
+
+const dlg = $("gameDlg"), gStage = $("gStage"), gResult = $("gResult"), gHelp = $("gHelp"), gTabs = $("gTabs");
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const dist = (p, q) => Math.hypot(p.x - q.x, p.y - q.y);
+let cleanup = null;
+let activeGame = "stopwatch";
+
+function showResult(win, title, detail) {
+  gResult.className = "g-result" + (win ? " win" : "");
+  gResult.hidden = false;
+  gResult.innerHTML = "";
+  const h = document.createElement("h3"); h.textContent = title;
+  const p = document.createElement("p"); p.textContent = detail;
+  gResult.append(h, p);
+  if (win) {
+    const w = document.createElement("p");
+    w.style.fontWeight = "700";
+    w.textContent = "Kamu menang! Tunjukkan layar ini ke kasir untuk mendapat " + CONFIG.promoName +
+      ". Dimainkan pukul " + new Date().toLocaleTimeString("id-ID") + ".";
+    gResult.append(w);
+  }
+  const again = document.createElement("button");
+  again.type = "button"; again.className = "g-btn"; again.textContent = "Main lagi";
+  again.addEventListener("click", () => startGame(activeGame));
+  gResult.append(again);
+  gResult.scrollIntoView({ block: "nearest", behavior: "smooth" });
+}
+
+function makeCanvas(root, S) {
+  const cv = document.createElement("canvas");
+  cv.className = "g-canvas"; cv.width = S * 2; cv.height = S * 2;
+  cv.setAttribute("aria-label", "Area permainan");
+  root.appendChild(cv);
+  const ctx = cv.getContext("2d");
+  const pos = e => {
+    const r = cv.getBoundingClientRect();
+    return { x: (e.clientX - r.left) * S / r.width, y: (e.clientY - r.top) * S / r.height };
+  };
+  const begin = () => { ctx.setTransform(2, 0, 0, 2, 0, 0); ctx.clearRect(0, 0, S, S); };
+  return { cv, ctx, pos, begin };
+}
+
+/* ---------- Game 1: Stopwatch ---------- */
+function mountStopwatch(root, done) {
+  const { targetSec, hideAfterSec, tolSec } = CONFIG.stopwatch;
+  const disp = document.createElement("div"); disp.className = "sw-display"; disp.textContent = "0.00";
+  const btn = document.createElement("button"); btn.type = "button"; btn.className = "g-btn"; btn.textContent = "Mulai";
+  root.append(disp, btn);
+  let state = "idle", t0 = 0, raf = 0;
+  const fmt = s => s.toFixed(2);
+  function tick() {
+    const s = (performance.now() - t0) / 1000;
+    disp.textContent = s < hideAfterSec ? fmt(s) : "?.??";
+    raf = requestAnimationFrame(tick);
+  }
+  function stop() {
+    if (state !== "running") return;
+    const s = (performance.now() - t0) / 1000;
+    state = "done"; cancelAnimationFrame(raf);
+    disp.textContent = fmt(s); btn.hidden = true;
+    const diff = s - targetSec;
+    const win = Math.abs(diff) <= tolSec + 1e-9;
+    done(win, win ? "Pas banget!" : "Belum pas",
+      "Kamu berhenti di " + fmt(s) + " detik, selisih " + (diff >= 0 ? "+" : "") + diff.toFixed(2) +
+      " dari target " + fmt(targetSec) + " detik.");
+  }
+  btn.addEventListener("pointerdown", e => { if (state === "running") { e.preventDefault(); stop(); } });
+  btn.addEventListener("keydown", e => { if ((e.key === " " || e.key === "Enter") && state === "running") { e.preventDefault(); stop(); } });
+  btn.addEventListener("click", () => {
+    if (state !== "idle") return;
+    state = "running"; t0 = performance.now(); btn.textContent = "STOP"; raf = requestAnimationFrame(tick);
+  });
+  return () => cancelAnimationFrame(raf);
+}
+
+/* ---------- Game 2: Potong Adil ---------- */
+function genShape(S) {
+  const n = 8 + Math.floor(Math.random() * 4), pts = [], step = Math.PI * 2 / n, off = Math.random() * Math.PI * 2;
+  for (let i = 0; i < n; i++) {
+    const a = off + i * step + (Math.random() - .5) * step * .5;
+    const r = 75 + Math.random() * 95;
+    pts.push({ x: S / 2 + r * Math.cos(a), y: S / 2 + r * Math.sin(a) });
+  }
+  return pts;
+}
+function polyArea(p) {
+  let s = 0;
+  for (let i = 0; i < p.length; i++) { const q = p[(i + 1) % p.length]; s += p[i].x * q.y - q.x * p[i].y; }
+  return Math.abs(s) / 2;
+}
+function polyCentroid(p) {
+  let a = 0, cx = 0, cy = 0;
+  for (let i = 0; i < p.length; i++) {
+    const q = p[(i + 1) % p.length], c = p[i].x * q.y - q.x * p[i].y;
+    a += c; cx += (p[i].x + q.x) * c; cy += (p[i].y + q.y) * c;
+  }
+  if (Math.abs(a) < 1e-6) return null;
+  return { x: cx / (3 * a), y: cy / (3 * a) };
+}
+function clipHalf(poly, f) {
+  const out = [];
+  for (let i = 0; i < poly.length; i++) {
+    const cur = poly[i], prev = poly[(i + poly.length - 1) % poly.length], fc = f(cur), fp = f(prev);
+    const cross = () => { const t = fp / (fp - fc); return { x: prev.x + t * (cur.x - prev.x), y: prev.y + t * (cur.y - prev.y) }; };
+    if (fc >= 0) { if (fp < 0) out.push(cross()); out.push(cur); }
+    else if (fp >= 0) out.push(cross());
+  }
+  return out;
+}
+function tracePoly(ctx, p) { ctx.beginPath(); p.forEach((q, i) => i ? ctx.lineTo(q.x, q.y) : ctx.moveTo(q.x, q.y)); ctx.closePath(); }
+
+function mountCut(root, done) {
+  const S = 400, { cv, ctx, pos, begin } = makeCanvas(root, S), poly = genShape(S);
+  let a = null, b = null, dragging = false, finished = false;
+  const extend = () => {
+    const d = dist(a, b), ux = (b.x - a.x) / d, uy = (b.y - a.y) / d;
+    return [{ x: a.x - ux * 800, y: a.y - uy * 800 }, { x: a.x + ux * 800, y: a.y + uy * 800 }];
+  };
+  function line(color, dash) {
+    const [p, q] = extend();
+    ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = 3; ctx.setLineDash(dash); ctx.beginPath();
+    ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.stroke(); ctx.restore();
+  }
+  function draw() {
+    begin();
+    tracePoly(ctx, poly); ctx.fillStyle = "#ffd9bf"; ctx.fill();
+    ctx.lineWidth = 3; ctx.strokeStyle = css("--text"); ctx.lineJoin = "round"; ctx.stroke();
+    if (a && b && dist(a, b) > 2) line(css("--text"), [8, 6]);
+  }
+  function finish() {
+    finished = true;
+    const dx = b.x - a.x, dy = b.y - a.y;
+    const f = p => -dy * (p.x - a.x) + dx * (p.y - a.y);
+    const s1 = clipHalf(poly, f), s2 = clipHalf(poly, p => -f(p));
+    const a1 = s1.length ? polyArea(s1) : 0, a2 = s2.length ? polyArea(s2) : 0;
+    const pct1 = a1 / (a1 + a2) * 100, pct2 = 100 - pct1;
+    begin();
+    [[s1, "#fd751f", pct1], [s2, "#232a6e", pct2]].forEach(([s, col]) => {
+      if (s.length < 3) return;
+      tracePoly(ctx, s); ctx.fillStyle = col; ctx.globalAlpha = .75; ctx.fill(); ctx.globalAlpha = 1;
+    });
+    tracePoly(ctx, poly); ctx.lineWidth = 3; ctx.strokeStyle = css("--text"); ctx.stroke();
+    line(css("--text"), []);
+    ctx.font = "800 22px Figtree, Arial, sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    [[s1, pct1], [s2, pct2]].forEach(([s, pc]) => {
+      const c = s.length >= 3 && polyCentroid(s);
+      if (!c) return;
+      ctx.lineWidth = 5; ctx.strokeStyle = "#fff"; ctx.strokeText(pc.toFixed(1) + "%", c.x, c.y);
+      ctx.fillStyle = "#1b1511"; ctx.fillText(pc.toFixed(1) + "%", c.x, c.y);
+    });
+    const tol = CONFIG.cut.tolPct, win = Math.abs(pct1 - 50) <= tol + 1e-9;
+    done(win, win ? "Potongan adil!" : "Belum adil",
+      "Bagian oranye " + pct1.toFixed(1) + "%, bagian biru " + pct2.toFixed(1) + "%. Batas menang: 50% ± " + tol + "%.");
+  }
+  cv.addEventListener("pointerdown", e => {
+    if (finished) return;
+    cv.setPointerCapture(e.pointerId); dragging = true; a = pos(e); b = null; draw();
+  });
+  cv.addEventListener("pointermove", e => { if (dragging) { b = pos(e); draw(); } });
+  const up = e => {
+    if (!dragging) return;
+    dragging = false; b = pos(e);
+    if (dist(a, b) < 20) { a = b = null; draw(); return; }
+    finish();
+  };
+  cv.addEventListener("pointerup", up);
+  cv.addEventListener("pointercancel", () => { dragging = false; a = b = null; draw(); });
+  draw();
+  return null;
+}
+
+/* ---------- Game 4: Urutan Angka ---------- */
+function shuffle(a) {
+  for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+  return a;
+}
+function mountOrder(root, done) {
+  const { count, studySec } = CONFIG.order, COLS = 5, CELLS = COLS * 5;
+  const spots = shuffle([...Array(CELLS).keys()]).slice(0, count);
+  const nums = shuffle([...Array(count).keys()].map(i => i + 1));
+  const valueAt = new Map(spots.map((c, i) => [c, nums[i]]));
+  const bar = document.createElement("div"), fill = document.createElement("span");
+  bar.className = "o-bar"; bar.appendChild(fill);
+  const status = document.createElement("p"); status.className = "o-status";
+  const grid = document.createElement("div"); grid.className = "o-grid";
+  const startBtn = document.createElement("button");
+  startBtn.type = "button"; startBtn.className = "g-btn"; startBtn.textContent = "Mulai";
+  root.append(bar, status, grid, startBtn);
+  let btns = [], state = "idle", next = 1, timer = 0;
+
+  function emptyBoard() {
+    grid.innerHTML = "";
+    for (let c = 0; c < CELLS; c++) { const e = document.createElement("div"); e.className = "o-empty"; grid.appendChild(e); }
+  }
+  function hideRest() {
+    btns.forEach(b => { if (!b.disabled) { b.textContent = "?"; b.classList.add("hid"); b.setAttribute("aria-label", "Kotak tersembunyi"); } });
+  }
+  function vanish(b) { b.disabled = true; b.style.visibility = "hidden"; }
+  function toPlay() {
+    state = "play"; hideRest(); status.textContent = "Tekan angka " + next + ".";
+  }
+  function onTap(b) {
+    if (state === "over") return;
+    const v = Number(b.dataset.v);
+    if (state === "study") {
+      if (v !== 1) return;
+      clearTimeout(timer); vanish(b); next = 2; toPlay(); return;
+    }
+    if (v === next) {
+      vanish(b); next++;
+      if (next > count) {
+        state = "over"; status.textContent = "Selesai!";
+        done(true, "Ingatanmu tajam!", "Semua " + count + " angka kamu tekan berurutan dengan benar.");
+      } else status.textContent = "Tekan angka " + next + ".";
+      return;
+    }
+    state = "over";
+    btns.forEach(x => { if (!x.disabled) { x.textContent = x.dataset.v; x.classList.remove("hid"); } });
+    b.classList.add("bad");
+    status.textContent = "Salah urutan.";
+    done(false, "Belum berhasil", "Kamu menekan angka " + v + ", padahal giliran angka " + next + ". Berhasil sampai angka " + (next - 1) + " dari " + count + ".");
+  }
+  function begin() {
+    if (state !== "idle") return;
+    state = "study"; startBtn.hidden = true; grid.innerHTML = ""; btns = [];
+    for (let c = 0; c < CELLS; c++) {
+      if (!valueAt.has(c)) { const e = document.createElement("div"); e.className = "o-empty"; grid.appendChild(e); continue; }
+      const b = document.createElement("button");
+      b.type = "button"; b.className = "o-cell"; b.dataset.v = valueAt.get(c);
+      b.textContent = valueAt.get(c); b.setAttribute("aria-label", "Angka " + valueAt.get(c));
+      b.addEventListener("click", () => onTap(b));
+      grid.appendChild(b); btns.push(b);
+    }
+    status.textContent = "Hafalkan posisinya! Tekan angka 1 untuk mulai lebih cepat.";
+    fill.style.transition = "width " + studySec + "s linear";
+    requestAnimationFrame(() => requestAnimationFrame(() => { fill.style.width = "0%"; }));
+    timer = setTimeout(() => { if (state === "study") toPlay(); }, studySec * 1000);
+  }
+  emptyBoard();
+  status.textContent = "Tekan Mulai, lalu " + count + " angka muncul selama " + studySec + " detik.";
+  startBtn.addEventListener("click", begin);
+  return () => clearTimeout(timer);
+}
+
+/* ---------- Dialog ---------- */
+const GAMES = [
+  { id: "stopwatch", name: "Stopwatch", mount: mountStopwatch,
+    help: () => "Tekan Mulai, lalu tekan STOP tepat di detik ke-" + CONFIG.stopwatch.targetSec + ". Angka hilang setelah " +
+      CONFIG.stopwatch.hideAfterSec + " detik, jadi hitung sendiri. Boleh meleset ±" + CONFIG.stopwatch.tolSec.toFixed(2) + " detik." },
+  { id: "cut", name: "Potong Adil", mount: mountCut,
+    help: () => "Tarik garis melewati bentuk di bawah untuk membaginya jadi dua bagian sama besar. Boleh selisih ±" + CONFIG.cut.tolPct + "%." },
+  { id: "order", name: "Urutan Angka", mount: mountOrder,
+    help: () => "Tekan Mulai, lalu " + CONFIG.order.count + " angka muncul di posisi acak selama " + CONFIG.order.studySec +
+      " detik (atau tekan angka 1 untuk mulai lebih cepat). Setelah itu angka berubah jadi tanda tanya, tekan posisinya dari 1 sampai " + CONFIG.order.count + ". Satu salah, kalah." }
+];
+
+function startGame(id) {
+  if (cleanup) { cleanup(); cleanup = null; }
+  activeGame = id;
+  const g = GAMES.find(x => x.id === id);
+  gStage.innerHTML = ""; gResult.hidden = true; gResult.innerHTML = "";
+  gHelp.textContent = g.help();
+  [...gTabs.children].forEach(b => b.setAttribute("aria-pressed", String(b.dataset.id === id)));
+  cleanup = g.mount(gStage, showResult) || null;
+}
+
+GAMES.forEach(g => {
+  const b = document.createElement("button");
+  b.type = "button"; b.className = "g-tab"; b.dataset.id = g.id; b.textContent = g.name;
+  b.addEventListener("click", () => startGame(g.id));
+  gTabs.appendChild(b);
+});
+$("playBtn").addEventListener("click", () => { dlg.showModal(); startGame(activeGame); });
+$("gClose").addEventListener("click", () => dlg.close());
+dlg.addEventListener("click", e => { if (e.target === dlg) dlg.close(); });
+dlg.addEventListener("close", () => { if (cleanup) { cleanup(); cleanup = null; } });
+
+/* ===== Aplikasi terpasang (PWA): service worker agar bisa dibuka tanpa internet ===== */
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => { navigator.serviceWorker.register("sw.js").catch(() => {}); });
+}
+</script>
+</body>
+</html>
