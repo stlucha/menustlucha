@@ -695,7 +695,7 @@ const rupiah = n => "Rp" + n.toLocaleString("id-ID");
 /* Kenaikan harga: semua harga naik PRICE_RISE rupiah mulai tanggal PRICE_RISE_FROM (waktu WIB).
    Mau langsung berlaku sekarang? Ganti PRICE_RISE_FROM jadi "2000-01-01". Mau batal? Ganti PRICE_RISE jadi 0. */
 const PRICE_RISE = 1000;
-const PRICE_RISE_FROM = "2027-02-01";
+const PRICE_RISE_FROM = "2000-01-01";
 const todayWIB = new Date(Date.now() + 7 * 3600 * 1000).toISOString().slice(0, 10);
 const priceOf = it => it.price + (todayWIB >= PRICE_RISE_FROM ? PRICE_RISE : 0);
 const $ = id => document.getElementById(id);
