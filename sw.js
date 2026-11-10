@@ -1,32 +1,6 @@
-/* Service worker St. Lucha Menu.
-   Menampilkan versi tersimpan lebih dulu (cepat, jalan tanpa internet), lalu memperbarui di belakang layar.
-   Kalau menu diubah, perangkat mendapat versi baru di pembukaan berikutnya setelah online. */
+/* Service worker St. Lucha Menu: tampilkan versi tersimpan dulu, perbarui di belakang layar. */
 const CACHE = "lucha-menu-v4";
-const ASSETS = [
-  "./",
-  "fonts/figtree-latin-400-normal.woff2",
-  "fonts/figtree-latin-500-normal.woff2",
-  "fonts/figtree-latin-600-normal.woff2",
-  "fonts/figtree-latin-700-normal.woff2",
-  "fonts/rubik-latin-900-italic.woff2",
-  "foto/aksen-1.jpg",
-  "foto/aksen-2.jpg",
-  "foto/aksen-3.jpg",
-  "foto/aksen-4.jpg",
-  "foto/aksen-5.jpg",
-  "foto/aksen-6.jpg",
-  "foto/aksen-7.jpg",
-  "foto/aksen-8.jpg",
-  "icons/apple-touch-icon.png",
-  "icons/favicon-32.png",
-  "icons/icon-192.png",
-  "icons/icon-512.png",
-  "icons/icon-maskable-512.png",
-  "icons/logo.png",
-  "index.html",
-  "manifest.webmanifest"
-];
-
+const ASSETS = ["./", "index.html", "manifest.webmanifest", "icon-192.png", "icon-512.png", "icon-maskable-512.png", "apple-touch-icon.png"];
 self.addEventListener("install", e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting()));
 });
