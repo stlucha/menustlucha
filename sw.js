@@ -1,7 +1,7 @@
 /* Service worker St. Lucha Menu.
    Menampilkan versi tersimpan lebih dulu (cepat, jalan tanpa internet), lalu memperbarui di belakang layar.
    Kalau menu diubah, perangkat mendapat versi baru di pembukaan berikutnya setelah online. */
-const CACHE = "lucha-menu-v1";
+const CACHE = "lucha-menu-v2";
 const ASSETS = [
   "./",
   "fonts/figtree-latin-400-normal.woff2",

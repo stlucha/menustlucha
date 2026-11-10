@@ -191,6 +191,8 @@
     .hero { aspect-ratio: 16 / 8; }
     .card img.poster { width: min(100%, 260px); }
   }
+  li.item > p.idesc { margin: -6px 0 12px; padding: 0; font-size: 13px; line-height: 1.35; opacity: .65; }
+  .rec { display: inline-block; margin-left: 8px; padding: 1px 7px; border-radius: 99px; background: var(--orange); color: #fff; font-size: 9px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; vertical-align: middle; white-space: nowrap; }
   .row.static { cursor: default; }
   .row.static:hover .name { color: inherit; }
 
@@ -257,46 +259,53 @@ const MENU = [
     "name": "Burger",
     "items": [
       {
+        "name": "Chiz In",
+        "price": 48000,
+        "desc": "The essential with cheese combined",
         "img": "",
-        "desc": "",
-        "name": "Ciz in",
-        "price": 48000
+        "rec": false
       },
       {
-        "img": "",
-        "desc": "",
-        "name": "Double Trouble",
-        "price": 48000
-      },
-      {
-        "img": "",
-        "desc": "",
         "name": "The Essential",
-        "price": 38000
+        "price": 38000,
+        "desc": "Signature Lucha Burger",
+        "img": "",
+        "rec": false
       },
       {
+        "name": "Double Trouble",
+        "price": 48000,
+        "desc": "Double the meat, double the satisfaction",
         "img": "",
-        "desc": "",
-        "name": "Slider dos",
-        "price": 39000
+        "rec": false
       },
       {
+        "name": "The Slider Uno",
+        "price": 24000,
+        "desc": "Burger in your pocket",
         "img": "",
-        "desc": "",
-        "name": "Slider uno",
-        "price": 24000
+        "rec": false
       },
       {
+        "name": "The Slider Dos",
+        "price": 39000,
+        "desc": "Two burger in your pocket",
         "img": "",
-        "desc": "",
-        "name": "Slider Quatros",
-        "price": 72000
+        "rec": false
       },
       {
-        "img": "",
+        "name": "The Slider Tres",
+        "price": 55000,
         "desc": "",
-        "name": "Slider Tres",
-        "price": 55000
+        "img": "",
+        "rec": false
+      },
+      {
+        "name": "The Slider Quatros",
+        "price": 72000,
+        "desc": "",
+        "img": "",
+        "rec": false
       }
     ]
   },
@@ -305,238 +314,292 @@ const MENU = [
     "name": "Snack",
     "items": [
       {
+        "name": "Signature Fries",
+        "price": 29000,
+        "desc": "Tartar sauce with parmesan cheese and secret sauce",
         "img": "",
-        "desc": "",
-        "name": "Bolognese fries",
-        "price": 26000
+        "rec": true
       },
       {
-        "img": "",
-        "desc": "",
-        "name": "Chili mayo fries",
-        "price": 28000
-      },
-      {
-        "img": "",
-        "desc": "",
-        "name": "Mentai fries",
-        "price": 28000
-      },
-      {
-        "img": "",
-        "desc": "",
-        "name": "Signature fries",
-        "price": 29000
-      },
-      {
-        "img": "",
-        "desc": "",
-        "name": "Tahu Cabai Garam",
-        "price": 21000
-      },
-      {
-        "img": "",
-        "desc": "",
         "name": "Triple Cheese",
-        "price": 30000
+        "price": 30000,
+        "desc": "Cheese slice with parmesan cheese and cheese sauce",
+        "img": "",
+        "rec": true
       },
       {
+        "name": "Bolognese Fries",
+        "price": 26000,
+        "desc": "Home made bolognese sauce with grilled meat",
         "img": "",
-        "desc": "",
+        "rec": false
+      },
+      {
+        "name": "Red Mentai",
+        "price": 28000,
+        "desc": "Home made mentai sauce with grilled meat",
+        "img": "",
+        "rec": true
+      },
+      {
+        "name": "Chili Mayo Madness",
+        "price": 28000,
+        "desc": "Classic chili mayo with grilled meat",
+        "img": "",
+        "rec": false
+      },
+      {
         "name": "French Fries",
-        "price": 21000
+        "price": 21000,
+        "desc": "Classic French fries",
+        "img": "",
+        "rec": false
       },
       {
+        "name": "Mix Platter",
+        "price": 29000,
+        "desc": "Platter mixed with french fries, sausage and Japanese styled chicken",
         "img": "",
-        "desc": "",
-        "name": "MIx Platter",
-        "price": 29000
+        "rec": false
+      },
+      {
+        "name": "Pisgor Lucha",
+        "price": 24000,
+        "desc": "Fried banana with brown sugar sauce and cinnamon sensation",
+        "img": "",
+        "rec": false
+      },
+      {
+        "name": "Tahu Cabai Garam",
+        "price": 21000,
+        "desc": "Signature Tahu Cabai Garam",
+        "img": "",
+        "rec": false
       }
     ]
   },
   {
-    "id": "heavy-meal",
-    "name": "Heavy Meal",
+    "id": "meals",
+    "name": "Meals",
     "items": [
       {
-        "img": "",
+        "name": "Nasi Goreng St.Lucha",
+        "price": 25000,
         "desc": "",
-        "name": "Nasi Goreng St.lucha",
-        "price": 25000
+        "img": "",
+        "rec": false
       },
       {
-        "img": "",
+        "name": "Ayam Cabai Garam / Saus Mentega",
+        "price": 28000,
         "desc": "",
-        "name": "Mentai Rice",
-        "price": 28000
+        "img": "",
+        "rec": false
       },
       {
-        "img": "",
+        "name": "Chicken Mentai Rice",
+        "price": 28000,
         "desc": "",
-        "name": "Ayam Cabai Garam",
-        "price": 25000
-      },
-      {
         "img": "",
-        "desc": "",
-        "name": "Ayam Matah",
-        "price": 25000
-      },
-      {
-        "img": "",
-        "desc": "",
-        "name": "Ayam Mentega",
-        "price": 25000
-      },
-      {
-        "img": "",
-        "desc": "",
-        "name": "CheeseCake",
-        "price": 32000
+        "rec": false
       }
     ]
   },
   {
-    "id": "coffee",
-    "name": "Coffee",
+    "id": "signature",
+    "name": "Signature",
     "items": [
       {
-        "img": "",
-        "desc": "",
-        "name": "Americano",
-        "price": 18000
-      },
-      {
-        "img": "",
-        "desc": "",
-        "name": "Americano Cloud Guava",
-        "price": 27000
-      },
-      {
-        "img": "",
-        "desc": "",
-        "name": "Americano Cloud Osmanthus",
-        "price": 27000
-      },
-      {
-        "img": "",
-        "desc": "",
-        "name": "Americano Cloud Peach",
-        "price": 27000
-      },
-      {
-        "img": "",
-        "desc": "",
-        "name": "Banana Coffee Latte",
-        "price": 26000
-      },
-      {
-        "img": "",
-        "desc": "",
-        "name": "Cappuccino",
-        "price": 24000
-      },
-      {
-        "img": "",
-        "desc": "",
-        "name": "Caramel Ciz Latte",
-        "price": 29000
-      },
-      {
-        "img": "",
-        "desc": "",
-        "name": "Espresso",
-        "price": 18000
-      },
-      {
-        "img": "",
-        "desc": "",
-        "name": "Fruity Americano Romano",
-        "price": 24000
-      },
-      {
-        "img": "",
-        "desc": "",
-        "name": "Hazelnut Coffee Cream",
-        "price": 27000
-      },
-      {
-        "img": "",
-        "desc": "",
-        "name": "Latte",
-        "price": 24000
-      },
-      {
-        "img": "",
-        "desc": "",
-        "name": "Magic Latte",
-        "price": 25000
-      },
-      {
-        "img": "",
-        "desc": "",
-        "name": "Mont Blanc",
-        "price": 28000
-      },
-      {
-        "img": "",
-        "desc": "",
-        "name": "Americano Cloud Berry",
-        "price": 27000
-      },
-      {
-        "img": "",
-        "desc": "",
-        "name": "Forte Latte",
-        "price": 26000
-      },
-      {
-        "img": "",
-        "desc": "",
-        "name": "Fruity Americano Berry",
-        "price": 24000
-      },
-      {
-        "img": "",
-        "desc": "",
-        "name": "Fruity Americano Guava",
-        "price": 24000
-      },
-      {
-        "img": "",
-        "desc": "",
-        "name": "Fruity Americano Peach",
-        "price": 24000
-      },
-      {
-        "img": "",
-        "desc": "",
         "name": "Luchas",
-        "price": 26000
+        "price": 26000,
+        "desc": "Aren coffee with more bold taste",
+        "img": "",
+        "rec": false
       },
       {
-        "img": "",
-        "desc": "",
         "name": "Saints",
-        "price": 24000
+        "price": 24000,
+        "desc": "Aren coffee with creamy taste",
+        "img": "",
+        "rec": false
       },
       {
-        "img": "",
-        "desc": "",
         "name": "Scotch",
-        "price": 25000
+        "price": 25000,
+        "desc": "Coffee milk with butterscotch syrup",
+        "img": "",
+        "rec": false
       },
       {
+        "name": "Crema Rapida",
+        "price": 26000,
+        "desc": "Strong espresso with condensed milk and syrup",
         "img": "",
-        "desc": "",
-        "name": "Fridge cigarette",
-        "price": 24000
+        "rec": false
       },
       {
+        "name": "Mont Blanc",
+        "price": 28000,
+        "desc": "Americano with citrus cloud on top",
         "img": "",
+        "rec": false
+      },
+      {
+        "name": "Dirty Latte",
+        "price": 28000,
+        "desc": "Double ristretto with milk blend by Lucha",
+        "img": "",
+        "rec": false
+      },
+      {
+        "name": "Forte Latte",
+        "price": 26000,
+        "desc": "Strong espresso with milk and condensed milk",
+        "img": "",
+        "rec": false
+      }
+    ]
+  },
+  {
+    "id": "matcha",
+    "name": "Matcha",
+    "items": [
+      {
+        "name": "Yasmin",
+        "price": 25000,
+        "desc": "Matcha with jasmine syrup",
+        "img": "",
+        "rec": false
+      },
+      {
+        "name": "Barry",
+        "price": 27000,
+        "desc": "Matcha with strawberry syrup on top",
+        "img": "",
+        "rec": false
+      },
+      {
+        "name": "Matcha Latte",
+        "price": 25000,
+        "desc": "Classic matcha latte",
+        "img": "",
+        "rec": false
+      }
+    ]
+  },
+  {
+    "id": "chocolate",
+    "name": "Chocolate",
+    "items": [
+      {
+        "name": "Choco Classic",
+        "price": 24000,
+        "desc": "Classic chocolate",
+        "img": "",
+        "rec": false
+      },
+      {
+        "name": "Piscok",
+        "price": 24000,
+        "desc": "Choco milk with banana syrup",
+        "img": "",
+        "rec": false
+      },
+      {
+        "name": "Choco Berry",
+        "price": 26000,
+        "desc": "Chocolate with strawberry",
+        "img": "",
+        "rec": false
+      }
+    ]
+  },
+  {
+    "id": "seasonal-coffee",
+    "name": "Seasonal Coffee",
+    "items": [
+      {
+        "name": "Fruity Americano",
+        "price": 24000,
+        "desc": "Romano / Berry / Peach / Apple / Guava",
+        "img": "",
+        "rec": true
+      },
+      {
+        "name": "Americano Cloud (Foam on Top)",
+        "price": 27000,
+        "desc": "Berry / Peach / Osmanthus / Guava / Apple / Choco / Banana",
+        "img": "",
+        "rec": true
+      },
+      {
+        "name": "Popcorn Latte",
+        "price": 29000,
+        "desc": "Coffee milk with popcorn topping",
+        "img": "",
+        "rec": false
+      },
+      {
+        "name": "Caramel Ciz Latte",
+        "price": 29000,
+        "desc": "Coffee milk with caramel syrup and cheese",
+        "img": "",
+        "rec": true
+      },
+      {
+        "name": "Banana Coffee Latte",
+        "price": 26000,
+        "desc": "Coffee milk with banana cream on top",
+        "img": "",
+        "rec": false
+      },
+      {
+        "name": "Hazelnut Coffee Cream",
+        "price": 27000,
+        "desc": "Coffee milk with hazelnut cream",
+        "img": "",
+        "rec": false
+      }
+    ]
+  },
+  {
+    "id": "coffee-classic",
+    "name": "Coffee Classic",
+    "items": [
+      {
+        "name": "Espresso",
+        "price": 18000,
+        "desc": "Extract coffee + mineral water",
+        "img": "",
+        "rec": false
+      },
+      {
+        "name": "Americano Iced / Hot",
+        "price": 18000,
+        "desc": "Espresso with fresh water",
+        "img": "",
+        "rec": false
+      },
+      {
+        "name": "Cappuccino / Latte",
+        "price": 24000,
+        "desc": "Espresso with milk",
+        "img": "",
+        "rec": false
+      },
+      {
+        "name": "Magic Latte",
+        "price": 25000,
+        "desc": "Single ristretto with milk",
+        "img": "",
+        "rec": false
+      },
+      {
+        "name": "Filter Coffee",
+        "price": 25000,
         "desc": "",
-        "name": "Extra Shot",
-        "price": 5000
+        "img": "",
+        "rec": false
       }
     ]
   },
@@ -545,160 +608,66 @@ const MENU = [
     "name": "Non Coffee",
     "items": [
       {
-        "img": "",
-        "desc": "",
-        "name": "Banana Butterscotch",
-        "price": 25000
-      },
-      {
-        "img": "",
-        "desc": "",
-        "name": "Barry",
-        "price": 27000
-      },
-      {
-        "img": "",
-        "desc": "",
-        "name": "Choco Berry",
-        "price": 26000
-      },
-      {
-        "img": "",
-        "desc": "",
-        "name": "Choco Cinnamon",
-        "price": 24000
-      },
-      {
-        "img": "",
-        "desc": "",
-        "name": "Choco Classic",
-        "price": 24000
-      },
-      {
-        "img": "",
-        "desc": "",
-        "name": "Choco Orange",
-        "price": 24000
-      },
-      {
-        "img": "",
-        "desc": "",
-        "name": "Choco Praline",
-        "price": 24000
-      },
-      {
-        "img": "",
-        "desc": "",
-        "name": "Matcha Latte",
-        "price": 25000
-      },
-      {
-        "img": "",
-        "desc": "",
-        "name": "Piscok",
-        "price": 24000
-      },
-      {
-        "img": "",
-        "desc": "",
-        "name": "Pisgor",
-        "price": 24000
-      },
-      {
-        "img": "",
-        "desc": "",
         "name": "Strawberry Ciz",
-        "price": 25000
+        "price": 25000,
+        "desc": "Strawberry syrup with milk and cheese on top",
+        "img": "",
+        "rec": true
       },
       {
+        "name": "Banana Butterscotch",
+        "price": 25000,
+        "desc": "Banana syrup with butterscotch",
         "img": "",
-        "desc": "",
-        "name": "Yasmin",
-        "price": 25000
+        "rec": false
       },
       {
+        "name": "Choco Cinnamon",
+        "price": 24000,
+        "desc": "Chocolate with cinnamon syrup",
         "img": "",
-        "desc": "",
-        "name": "Mineral water",
-        "price": 6000
+        "rec": false
       },
       {
+        "name": "Choco Praline",
+        "price": 24000,
+        "desc": "Choco milk with pecan praline syrup",
         "img": "",
-        "desc": "",
-        "name": "Coke",
-        "price": 4000
-      }
-    ]
-  },
-  {
-    "id": "freshness",
-    "name": "Freshness",
-    "items": [
-      {
-        "img": "",
-        "desc": "",
-        "name": "Spark Berry",
-        "price": 21000
+        "rec": true
       },
       {
+        "name": "Choco Orange",
+        "price": 24000,
+        "desc": "Choco milk with orange",
         "img": "",
-        "desc": "",
-        "name": "Spark Jasmine",
-        "price": 21000
+        "rec": false
       },
       {
-        "img": "",
-        "desc": "",
-        "name": "Spark Lemon",
-        "price": 21000
-      },
-      {
-        "img": "",
-        "desc": "",
-        "name": "Spark Peach",
-        "price": 21000
-      },
-      {
-        "img": "",
-        "desc": "",
-        "name": "Spark Vanilla",
-        "price": 21000
-      },
-      {
-        "img": "",
-        "desc": "",
         "name": "Old Fashioned",
-        "price": 22000
+        "price": 22000,
+        "desc": "Jasmine, citrus and strawberry",
+        "img": "",
+        "rec": true
       }
     ]
   },
   {
-    "id": "tea",
-    "name": "Tea",
+    "id": "tea-freshness",
+    "name": "Tea n Freshness",
     "items": [
       {
+        "name": "Iced Tea",
+        "price": 18000,
+        "desc": "Jasmine / Peach / Berry / Lemon / Vanilla",
         "img": "",
-        "desc": "",
-        "name": "Ice Tea Berry",
-        "price": 18000
+        "rec": false
       },
       {
+        "name": "Spark",
+        "price": 21000,
+        "desc": "Jasmine / Peach / Berry / Lemon / Vanilla",
         "img": "",
-        "desc": "",
-        "name": "Ice Tea Lemon",
-        "price": 18000
-      },
-      {
-        "img": "",
-        "desc": "",
-        "name": "Ice Tea Peach",
-        "price": 18000
-      },
-      {
-        "img": "",
-        "desc": "",
-        "name": "Ice Tea Vanilla",
-        "price": 18000
+        "rec": false
       }
     ]
   }
@@ -742,7 +711,7 @@ const ACCENTS = [
     "pos": "50% 55%"
   }
 ];
-const CAT_ACCENTS = { "burger": [1, 0], "snack": [2], "heavy-meal": [0], "coffee": [4, 5], "non-coffee": [6, 7], "freshness": [7, 6], "tea": [5, 4] };
+const CAT_ACCENTS = { "burger": [1, 0], "snack": [2], "meals": [0], "signature": [4, 5], "matcha": [6, 7], "chocolate": [5, 4], "seasonal-coffee": [4, 5], "coffee-classic": [5, 4], "non-coffee": [6, 7], "tea-freshness": [7, 6] };
 const FALLBACK_ACCENTS = [1, 2, 4, 6];
 const OFFSET = Math.floor(Math.random() * 10);
 function accentFor(cat, it, i) {
@@ -787,8 +756,10 @@ function renderList() {
     const li = document.createElement("li");
     li.className = "item";
     if (!EXPAND_MENU) {
-      li.innerHTML = `<div class="row static"><span class="name"></span><span class="dots" aria-hidden="true"></span><span class="price"></span></div>`;
+      li.innerHTML = `<div class="row static"><span class="name"></span><span class="dots" aria-hidden="true"></span><span class="price"></span></div><p class="idesc" hidden></p>`;
       li.querySelector(".name").textContent = it.name;
+      if (it.rec) { const b = document.createElement("span"); b.className = "rec"; b.textContent = "Rekomendasi"; li.querySelector(".name").appendChild(b); }
+      const dd = li.querySelector(".idesc"); if (it.desc) { dd.textContent = it.desc; dd.hidden = false; }
       li.querySelector(".price").textContent = rupiah(it.price);
       ul.appendChild(li);
       return;
@@ -825,7 +796,7 @@ function renderList() {
 
 function select(id) {
   current = id;
-  history.replaceState(null, "", "#" + id);
+  try { history.replaceState(null, "", "#" + id); } catch (e) {}
   renderCats();
   renderList();
   window.scrollTo({ top: 0 });
