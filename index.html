@@ -1038,7 +1038,7 @@ $("itemForm").addEventListener("submit", e => {
 const CONFIG = {
   promoName: "diskon games",
   stopwatch: { targetSec: 7, hideAfterSec: 2, tolSec: 0.10 },
-  cut: { tolPct: 4 },
+  cut: { tolPct: 0.5 },
   order: { count: 10, studySec: 4 }
 };
 
@@ -1193,7 +1193,7 @@ function mountCut(root, done) {
     });
     const tol = CONFIG.cut.tolPct, win = Math.abs(pct1 - 50) <= tol + 1e-9;
     done(win, win ? "Potongan adil!" : "Belum adil",
-      "Bagian oranye " + pct1.toFixed(1) + "%, bagian biru " + pct2.toFixed(1) + "%. Batas menang: 50% ± " + tol + "%.");
+      "Bagian oranye " + pct1.toFixed(2) + "%, bagian biru " + pct2.toFixed(2) + "%. Batas menang: 50% ± " + tol + "%.");
   }
   cv.addEventListener("pointerdown", e => {
     if (finished) return;
