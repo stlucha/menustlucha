@@ -193,6 +193,31 @@
   }
   li.item > p.idesc { margin: -6px 0 12px; padding: 0; font-size: 13px; line-height: 1.35; opacity: .65; }
   .rec { display: inline-block; margin-left: 8px; padding: 1px 7px; border-radius: 99px; background: var(--orange); color: #fff; font-size: 9px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; vertical-align: middle; white-space: nowrap; }
+
+  /* Mode admin */
+  .admin-bar { position: sticky; top: 0; z-index: 30; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 10px 16px; background: var(--ink); color: #fff; font-size: 14px; }
+  .admin-bar[hidden], .fab[hidden] { display: none; }
+  .admin-bar strong { font-family: var(--font-display); font-style: italic; font-weight: 900; letter-spacing: .02em; color: var(--orange); }
+  .admin-bar .adm-msg { flex: 1; min-width: 80px; opacity: .85; }
+  .admin-bar button { padding: 6px 12px; border: 2px solid #fff; border-radius: 99px; background: transparent; color: #fff; font-weight: 700; font-size: 13px; cursor: pointer; }
+  .admin-bar button.warn { background: #c0392b; border-color: #c0392b; }
+  .fab { position: fixed; right: 18px; bottom: 18px; z-index: 40; width: 62px; height: 62px; border-radius: 50%; border: 3px solid var(--ink); background: var(--orange); color: var(--ink); font-size: 36px; font-weight: 900; line-height: 1; cursor: pointer; box-shadow: 0 4px 14px rgba(0,0,0,.3); }
+  body.admin .content { padding-bottom: 110px; }
+  .edit-btn { flex: none; margin-left: 4px; padding: 5px 11px; border: 2px solid var(--text); border-radius: 8px; background: transparent; font-weight: 700; font-size: 13px; cursor: pointer; }
+  .edit-btn:hover { background: var(--orange); color: var(--ink); }
+  .adm-form label { display: block; margin: 12px 0 4px; font-weight: 700; }
+  .adm-form .adm-hint { margin: 4px 0 0; font-size: 13px; color: var(--muted); }
+  .adm-form input[type="text"], .adm-form input[type="number"], .adm-form input[type="password"], .adm-form select, .adm-form textarea {
+    width: 100%; padding: 10px 12px; border: 2px solid var(--text); border-radius: 10px; background: var(--bg); color: var(--text); font: inherit;
+  }
+  .adm-form .adm-check { display: flex; align-items: center; gap: 8px; font-weight: 700; }
+  .adm-form .adm-check input { width: 22px; height: 22px; }
+  .adm-err { margin: 10px 0 0; padding: 8px 12px; border-radius: 10px; background: #c0392b; color: #fff; font-weight: 700; }
+  .adm-err[hidden] { display: none; }
+  .adm-actions { display: flex; gap: 8px; margin-top: 14px; }
+  .adm-actions .g-btn { margin-top: 0; }
+  .g-btn.ghost { background: transparent; color: var(--text); border-color: var(--text); }
+  .g-btn.danger { background: #c0392b; border-color: #7b1f14; color: #fff; }
   .row.static { cursor: default; }
   .row.static:hover .name { color: inherit; }
 
@@ -226,6 +251,14 @@
     <button class="play-btn" id="playBtn" type="button">Main Game, Dapat Diskon<small>Menang? Tunjukkan ke kasir</small></button>
   </aside>
   <div class="main">
+    <div class="admin-bar" id="admBar" hidden>
+      <strong>MODE ADMIN</strong>
+      <span class="adm-msg" id="admMsg" role="status" aria-live="polite"></span>
+      <button type="button" id="admExport">Unduh data</button>
+      <button type="button" id="admCopy">Salin data</button>
+      <button type="button" id="admReset">Reset bawaan</button>
+      <button type="button" id="admExit">Keluar</button>
+    </div>
     <div class="checker" aria-hidden="true"></div>
     <main class="content">
       <div class="hero"><img id="heroImg" alt="" aria-hidden="true"><h1 id="title"></h1></div>
@@ -249,60 +282,102 @@
   </div>
 </dialog>
 
+<button class="fab" id="admFab" type="button" aria-label="Tambah menu" hidden>+</button>
+
+<dialog class="game" id="pinDlg" aria-labelledby="pinTitle">
+  <div class="checker" aria-hidden="true"></div>
+  <div class="g-head">
+    <h2 id="pinTitle">Mode Admin</h2>
+    <button class="g-close" id="pinClose" type="button" aria-label="Tutup">&times;</button>
+  </div>
+  <form class="g-body adm-form" id="pinForm">
+    <label for="pinInput">Masukkan PIN</label>
+    <input id="pinInput" type="text" inputmode="numeric" pattern="[0-9]*" name="lucha-kode" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" style="-webkit-text-security: disc; text-security: disc; letter-spacing: .3em">
+    <p class="adm-err" id="pinErr" role="alert" hidden>PIN salah</p>
+    <button class="g-btn" type="submit">Masuk</button>
+  </form>
+</dialog>
+
+<dialog class="game" id="itemDlg" aria-labelledby="itemTitle">
+  <div class="checker" aria-hidden="true"></div>
+  <div class="g-head">
+    <h2 id="itemTitle">Edit menu</h2>
+    <button class="g-close" id="itemClose" type="button" aria-label="Tutup">&times;</button>
+  </div>
+  <form class="g-body adm-form" id="itemForm" novalidate>
+    <label for="itName">Nama menu</label>
+    <input id="itName" type="text" autocomplete="off">
+    <label for="itPrice">Harga (dalam ribu)</label>
+    <input id="itPrice" type="number" inputmode="decimal" step="any" min="0">
+    <p class="adm-hint" id="itHint">Contoh: 24 berarti Rp24.000.</p>
+    <label for="itDesc">Deskripsi</label>
+    <textarea id="itDesc" rows="3"></textarea>
+    <label for="itCat">Kategori</label>
+    <select id="itCat"></select>
+    <label class="adm-check" style="margin-top:14px"><input id="itRec" type="checkbox"> Tandai Rekomendasi</label>
+    <p class="adm-err" id="itErr" role="alert" hidden></p>
+    <div class="adm-actions">
+      <button class="g-btn" type="submit">Simpan</button>
+      <button class="g-btn danger" id="itDel" type="button">Hapus</button>
+      <button class="g-btn ghost" id="itCancel" type="button">Batal</button>
+    </div>
+  </form>
+</dialog>
+
 <script>
 /* ===== DATA MENU: ganti isi bagian ini saja =====
    img: isi dengan alamat foto (mis. "foto/americano.jpg") atau data URI.
    Kalau kosong, otomatis tampil gambar pengganti. */
-const MENU = [
+const MENU_BASE = [
   {
     "id": "burger",
     "name": "Burger",
     "items": [
       {
         "name": "Chiz In",
-        "price": 48000,
+        "price": 49000,
         "desc": "The essential with cheese combined",
         "img": "",
         "rec": false
       },
       {
         "name": "The Essential",
-        "price": 38000,
+        "price": 39000,
         "desc": "Signature Lucha Burger",
         "img": "",
         "rec": false
       },
       {
         "name": "Double Trouble",
-        "price": 48000,
+        "price": 49000,
         "desc": "Double the meat, double the satisfaction",
         "img": "",
         "rec": false
       },
       {
         "name": "The Slider Uno",
-        "price": 24000,
+        "price": 25000,
         "desc": "Burger in your pocket",
         "img": "",
         "rec": false
       },
       {
         "name": "The Slider Dos",
-        "price": 39000,
+        "price": 40000,
         "desc": "Two burger in your pocket",
         "img": "",
         "rec": false
       },
       {
         "name": "The Slider Tres",
-        "price": 55000,
+        "price": 56000,
         "desc": "",
         "img": "",
         "rec": false
       },
       {
         "name": "The Slider Quatros",
-        "price": 72000,
+        "price": 73000,
         "desc": "",
         "img": "",
         "rec": false
@@ -315,63 +390,63 @@ const MENU = [
     "items": [
       {
         "name": "Signature Fries",
-        "price": 29000,
+        "price": 30000,
         "desc": "Tartar sauce with parmesan cheese and secret sauce",
         "img": "",
         "rec": true
       },
       {
         "name": "Triple Cheese",
-        "price": 30000,
+        "price": 31000,
         "desc": "Cheese slice with parmesan cheese and cheese sauce",
         "img": "",
         "rec": true
       },
       {
         "name": "Bolognese Fries",
-        "price": 26000,
+        "price": 27000,
         "desc": "Home made bolognese sauce with grilled meat",
         "img": "",
         "rec": false
       },
       {
         "name": "Red Mentai",
-        "price": 28000,
+        "price": 29000,
         "desc": "Home made mentai sauce with grilled meat",
         "img": "",
         "rec": true
       },
       {
         "name": "Chili Mayo Madness",
-        "price": 28000,
+        "price": 29000,
         "desc": "Classic chili mayo with grilled meat",
         "img": "",
         "rec": false
       },
       {
         "name": "French Fries",
-        "price": 21000,
+        "price": 22000,
         "desc": "Classic French fries",
         "img": "",
         "rec": false
       },
       {
         "name": "Mix Platter",
-        "price": 29000,
+        "price": 30000,
         "desc": "Platter mixed with french fries, sausage and Japanese styled chicken",
         "img": "",
         "rec": false
       },
       {
         "name": "Pisgor Lucha",
-        "price": 24000,
+        "price": 25000,
         "desc": "Fried banana with brown sugar sauce and cinnamon sensation",
         "img": "",
         "rec": false
       },
       {
         "name": "Tahu Cabai Garam",
-        "price": 21000,
+        "price": 22000,
         "desc": "Signature Tahu Cabai Garam",
         "img": "",
         "rec": false
@@ -384,21 +459,21 @@ const MENU = [
     "items": [
       {
         "name": "Nasi Goreng St.Lucha",
-        "price": 25000,
+        "price": 26000,
         "desc": "",
         "img": "",
         "rec": false
       },
       {
         "name": "Ayam Matah / Cabai Garam / Saus Mentega",
-        "price": 25000,
+        "price": 26000,
         "desc": "",
         "img": "",
         "rec": false
       },
       {
         "name": "Chicken Mentai Rice",
-        "price": 28000,
+        "price": 29000,
         "desc": "",
         "img": "",
         "rec": false
@@ -411,35 +486,35 @@ const MENU = [
     "items": [
       {
         "name": "Luchas",
-        "price": 26000,
+        "price": 27000,
         "desc": "Aren coffee with more bold taste",
         "img": "",
         "rec": false
       },
       {
         "name": "Saints",
-        "price": 24000,
+        "price": 25000,
         "desc": "Aren coffee with creamy taste",
         "img": "",
         "rec": false
       },
       {
         "name": "Scotch",
-        "price": 25000,
+        "price": 26000,
         "desc": "Coffee milk with butterscotch syrup",
         "img": "",
         "rec": false
       },
       {
         "name": "Mont Blanc",
-        "price": 28000,
+        "price": 29000,
         "desc": "Americano with citrus cloud on top",
         "img": "",
         "rec": false
       },
       {
         "name": "Forte Latte",
-        "price": 26000,
+        "price": 27000,
         "desc": "Strong espresso with milk and condensed milk",
         "img": "",
         "rec": false
@@ -452,21 +527,21 @@ const MENU = [
     "items": [
       {
         "name": "Yasmin",
-        "price": 25000,
+        "price": 26000,
         "desc": "Matcha with jasmine syrup",
         "img": "",
         "rec": false
       },
       {
         "name": "Barry",
-        "price": 27000,
+        "price": 28000,
         "desc": "Matcha with strawberry syrup on top",
         "img": "",
         "rec": false
       },
       {
         "name": "Matcha Latte",
-        "price": 25000,
+        "price": 26000,
         "desc": "Classic matcha latte",
         "img": "",
         "rec": false
@@ -479,21 +554,21 @@ const MENU = [
     "items": [
       {
         "name": "Choco Classic",
-        "price": 24000,
+        "price": 25000,
         "desc": "Classic chocolate",
         "img": "",
         "rec": false
       },
       {
         "name": "Piscok",
-        "price": 24000,
+        "price": 25000,
         "desc": "Choco milk with banana syrup",
         "img": "",
         "rec": false
       },
       {
         "name": "Choco Berry",
-        "price": 26000,
+        "price": 27000,
         "desc": "Chocolate with strawberry",
         "img": "",
         "rec": false
@@ -506,35 +581,35 @@ const MENU = [
     "items": [
       {
         "name": "Fruity Americano",
-        "price": 24000,
+        "price": 25000,
         "desc": "Romano / Berry / Peach / Apple / Guava",
         "img": "",
         "rec": true
       },
       {
         "name": "Americano Cloud (Foam on Top)",
-        "price": 27000,
+        "price": 28000,
         "desc": "Berry / Peach / Osmanthus / Guava / Apple / Choco / Banana",
         "img": "",
         "rec": true
       },
       {
         "name": "Caramel Ciz Latte",
-        "price": 29000,
+        "price": 30000,
         "desc": "Coffee milk with caramel syrup and cheese",
         "img": "",
         "rec": true
       },
       {
         "name": "Banana Coffee Latte",
-        "price": 26000,
+        "price": 27000,
         "desc": "Coffee milk with banana cream on top",
         "img": "",
         "rec": false
       },
       {
         "name": "Hazelnut Coffee Cream",
-        "price": 27000,
+        "price": 28000,
         "desc": "Coffee milk with hazelnut cream",
         "img": "",
         "rec": false
@@ -547,35 +622,35 @@ const MENU = [
     "items": [
       {
         "name": "Espresso",
-        "price": 18000,
+        "price": 19000,
         "desc": "Extract coffee + mineral water",
         "img": "",
         "rec": false
       },
       {
         "name": "Americano Iced / Hot",
-        "price": 18000,
+        "price": 19000,
         "desc": "Espresso with fresh water",
         "img": "",
         "rec": false
       },
       {
         "name": "Cappuccino / Latte",
-        "price": 24000,
+        "price": 25000,
         "desc": "Espresso with milk",
         "img": "",
         "rec": false
       },
       {
         "name": "Magic Latte",
-        "price": 25000,
+        "price": 26000,
         "desc": "Single ristretto with milk",
         "img": "",
         "rec": false
       },
       {
         "name": "Filter Coffee",
-        "price": 25000,
+        "price": 26000,
         "desc": "",
         "img": "",
         "rec": false
@@ -588,28 +663,28 @@ const MENU = [
     "items": [
       {
         "name": "Strawberry Ciz",
-        "price": 25000,
+        "price": 26000,
         "desc": "Strawberry syrup with milk and cheese on top",
         "img": "",
         "rec": true
       },
       {
         "name": "Banana Butterscotch",
-        "price": 25000,
+        "price": 26000,
         "desc": "Banana syrup with butterscotch",
         "img": "",
         "rec": false
       },
       {
         "name": "Choco Praline",
-        "price": 24000,
+        "price": 25000,
         "desc": "Choco milk with pecan praline syrup",
         "img": "",
         "rec": true
       },
       {
         "name": "Old Fashioned",
-        "price": 22000,
+        "price": 23000,
         "desc": "Jasmine, citrus and strawberry",
         "img": "",
         "rec": true
@@ -622,21 +697,69 @@ const MENU = [
     "items": [
       {
         "name": "Iced Tea",
-        "price": 18000,
+        "price": 19000,
         "desc": "Jasmine / Peach / Berry / Lemon / Vanilla",
         "img": "",
         "rec": false
       },
       {
         "name": "Spark",
-        "price": 21000,
+        "price": 22000,
         "desc": "Jasmine / Peach / Berry / Lemon / Vanilla",
+        "img": "",
+        "rec": false
+      }
+    ]
+  },
+  {
+    "id": "seasonal-menu",
+    "name": "Seasonal Menu",
+    "items": [
+      {
+        "name": "Fridge Cigarette",
+        "price": 24000,
+        "desc": "",
+        "img": "",
+        "rec": false
+      },
+      {
+        "name": "Soda Bahagia",
+        "price": 23000,
+        "desc": "",
+        "img": "",
+        "rec": false
+      },
+      {
+        "name": "Milktea Osmanthus",
+        "price": 26000,
+        "desc": "",
         "img": "",
         "rec": false
       }
     ]
   }
 ];
+
+/* Data tersimpan di perangkat ini (localStorage) kalau menu pernah diubah lewat Mode Admin.
+   Tombol "Reset bawaan" di Mode Admin mengembalikan ke daftar di atas. */
+const STORE_KEY = "lucha-menu-data-v1";
+function cloneMenu(x) { return JSON.parse(JSON.stringify(x)); }
+function loadMenu() {
+  try {
+    const raw = localStorage.getItem(STORE_KEY);
+    if (raw) {
+      const d = JSON.parse(raw);
+      if (Array.isArray(d) && d.length && d.every(c => c && c.id && c.name && Array.isArray(c.items) &&
+          c.items.every(i => i && typeof i.name === "string" && Number.isFinite(i.price)))) return d;
+    }
+  } catch (e) {}
+  return cloneMenu(MENU_BASE);
+}
+function saveMenu() {
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(MENU)); return true; } catch (e) { return false; }
+}
+let MENU = loadMenu();
+let adminMode = false;
 /* ===== akhir data ===== */
 
 /* ===== FOTO AKSEN: dipakai sebagai banner kategori dan isi panel menu yang dibuka.
@@ -676,7 +799,7 @@ const ACCENTS = [
     "pos": "50% 55%"
   }
 ];
-const CAT_ACCENTS = { "burger": [1, 0], "snack": [2], "meals": [0], "signature": [4, 5], "matcha": [6, 7], "chocolate": [5, 4], "seasonal-coffee": [4, 5], "coffee-classic": [5, 4], "non-coffee": [6, 7], "tea-freshness": [7, 6] };
+const CAT_ACCENTS = { "burger": [1, 0], "snack": [2], "meals": [0], "signature": [4, 5], "matcha": [6, 7], "chocolate": [5, 4], "seasonal-coffee": [4, 5], "coffee-classic": [5, 4], "non-coffee": [6, 7], "tea-freshness": [7, 6], "seasonal-menu": [6, 4] };
 const FALLBACK_ACCENTS = [1, 2, 4, 6];
 const OFFSET = Math.floor(Math.random() * 10);
 function accentFor(cat, it, i) {
@@ -692,12 +815,7 @@ const EXPAND_MENU = false;
 
 const rupiah = n => "Rp" + n.toLocaleString("id-ID");
 
-/* Kenaikan harga: semua harga naik PRICE_RISE rupiah mulai tanggal PRICE_RISE_FROM (waktu WIB).
-   Mau langsung berlaku sekarang? Ganti PRICE_RISE_FROM jadi "2000-01-01". Mau batal? Ganti PRICE_RISE jadi 0. */
-const PRICE_RISE = 1000;
-const PRICE_RISE_FROM = "2000-01-01";
-const todayWIB = new Date(Date.now() + 7 * 3600 * 1000).toISOString().slice(0, 10);
-const priceOf = it => it.price + (todayWIB >= PRICE_RISE_FROM ? PRICE_RISE : 0);
+const priceOf = it => it.price;
 const $ = id => document.getElementById(id);
 const esc = s => s.replace(/[&<>]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
 
@@ -733,6 +851,13 @@ function renderList() {
       if (it.rec) { const b = document.createElement("span"); b.className = "rec"; b.textContent = "Rekomendasi"; li.querySelector(".name").appendChild(b); }
       const dd = li.querySelector(".idesc"); if (it.desc) { dd.textContent = it.desc; dd.hidden = false; }
       li.querySelector(".price").textContent = rupiah(priceOf(it));
+      if (adminMode) {
+        const eb = document.createElement("button");
+        eb.type = "button"; eb.className = "edit-btn"; eb.textContent = "Edit";
+        eb.setAttribute("aria-label", "Edit " + it.name);
+        eb.addEventListener("click", () => openItemDialog(cat.id, i));
+        li.querySelector(".row").appendChild(eb);
+      }
       ul.appendChild(li);
       return;
     }
@@ -782,6 +907,131 @@ function fromHash() {
 }
 window.addEventListener("hashchange", fromHash);
 fromHash();
+
+/* ===== MODE ADMIN =====
+   Masuk: ketuk logo St. Lucha 5 kali dengan cepat, lalu masukkan PIN.
+   Perubahan tersimpan di perangkat/browser ini saja (bukan untuk semua pelanggan).
+   PIN ada di kode, jadi hanya penghalang ringan. Ganti angkanya di bawah ini. */
+const ADMIN_PIN = "1234";
+
+const admBar = $("admBar"), admMsgEl = $("admMsg"), admFab = $("admFab");
+const pinDlg = $("pinDlg"), itemDlg = $("itemDlg");
+let msgTimer = 0;
+function admMsg(t) {
+  admMsgEl.textContent = t;
+  clearTimeout(msgTimer);
+  msgTimer = setTimeout(() => { admMsgEl.textContent = ""; }, 4000);
+}
+function setAdmin(on) {
+  adminMode = on;
+  admBar.hidden = !on;
+  admFab.hidden = !on;
+  document.body.classList.toggle("admin", on);
+  renderList();
+}
+function persist() {
+  if (!saveMenu()) admMsg("Gagal menyimpan di perangkat ini (mode privat?)");
+  else admMsg("Tersimpan di perangkat ini");
+}
+
+(function () {
+  let taps = 0, last = 0;
+  document.querySelector(".logo").addEventListener("click", () => {
+    const now = Date.now();
+    taps = (now - last > 3000) ? 1 : taps + 1;
+    last = now;
+    if (taps >= 5) { taps = 0; if (!adminMode) openPin(); }
+  });
+})();
+
+function openPin() {
+  $("pinInput").value = ""; $("pinErr").hidden = true;
+  pinDlg.showModal(); $("pinInput").focus();
+}
+$("pinClose").addEventListener("click", () => pinDlg.close());
+function tryPin(auto) {
+  const v = $("pinInput").value.replace(/[^0-9]/g, "");
+  if (v === ADMIN_PIN) { pinDlg.close(); setAdmin(true); admMsg("Mode admin aktif"); return; }
+  if (auto && v.length < ADMIN_PIN.length) return;
+  $("pinErr").hidden = false; $("pinInput").value = ""; $("pinInput").focus();
+}
+$("pinForm").addEventListener("submit", e => { e.preventDefault(); tryPin(false); });
+$("pinInput").addEventListener("input", () => { $("pinErr").hidden = true; tryPin(true); });
+$("admExit").addEventListener("click", () => setAdmin(false));
+
+function exportJson() { return JSON.stringify(MENU, null, 2); }
+$("admExport").addEventListener("click", () => {
+  try {
+    const url = URL.createObjectURL(new Blob([exportJson()], { type: "application/json" }));
+    const a = document.createElement("a");
+    a.href = url; a.download = "menu-lucha-data.json";
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    admMsg("Data menu diunduh");
+  } catch (e) { admMsg("Gagal mengunduh"); }
+});
+$("admCopy").addEventListener("click", () => {
+  try {
+    navigator.clipboard.writeText(exportJson()).then(() => admMsg("Data menu disalin"), () => admMsg("Gagal menyalin"));
+  } catch (e) { admMsg("Gagal menyalin"); }
+});
+let resetArmed = 0;
+$("admReset").addEventListener("click", e => {
+  const b = e.currentTarget;
+  if (!resetArmed) {
+    resetArmed = setTimeout(() => { resetArmed = 0; b.textContent = "Reset bawaan"; b.classList.remove("warn"); }, 4000);
+    b.textContent = "Yakin reset?"; b.classList.add("warn"); return;
+  }
+  clearTimeout(resetArmed); resetArmed = 0; b.textContent = "Reset bawaan"; b.classList.remove("warn");
+  try { localStorage.removeItem(STORE_KEY); } catch (er) {}
+  MENU = cloneMenu(MENU_BASE);
+  if (!MENU.some(c => c.id === current)) current = MENU[0].id;
+  renderCats(); renderList(); admMsg("Menu dikembalikan ke bawaan");
+});
+
+$("admFab").addEventListener("click", () => openItemDialog(current, -1));
+
+let editCat = null, editIdx = -1, delArmed = false;
+function openItemDialog(catId, idx) {
+  editCat = catId; editIdx = idx; delArmed = false;
+  const cat = MENU.find(c => c.id === catId);
+  const it = idx >= 0 ? cat.items[idx] : null;
+  $("itemTitle").textContent = it ? "Edit menu" : "Tambah menu";
+  $("itName").value = it ? it.name : "";
+  $("itPrice").value = it ? String(it.price / 1000) : "";
+  $("itDesc").value = it ? (it.desc || "") : "";
+  $("itRec").checked = !!(it && it.rec);
+  const sel = $("itCat"); sel.innerHTML = "";
+  MENU.forEach(c => { const o = document.createElement("option"); o.value = c.id; o.textContent = c.name; sel.appendChild(o); });
+  sel.value = catId;
+  $("itDel").hidden = !it; $("itDel").textContent = "Hapus";
+  $("itErr").hidden = true;
+  itemDlg.showModal(); $("itName").focus();
+}
+function itemError(t) { const el = $("itErr"); el.textContent = t; el.hidden = false; }
+$("itemClose").addEventListener("click", () => itemDlg.close());
+$("itCancel").addEventListener("click", () => itemDlg.close());
+$("itDel").addEventListener("click", e => {
+  if (!delArmed) { delArmed = true; e.currentTarget.textContent = "Yakin hapus?"; return; }
+  MENU.find(c => c.id === editCat).items.splice(editIdx, 1);
+  persist(); itemDlg.close(); renderCats(); renderList();
+});
+$("itemForm").addEventListener("submit", e => {
+  e.preventDefault();
+  const name = $("itName").value.trim();
+  if (!name) { itemError("Nama menu wajib diisi"); return; }
+  const raw = parseFloat(String($("itPrice").value).replace(",", "."));
+  if (!Number.isFinite(raw) || raw < 0) { itemError("Harga belum diisi dengan benar"); return; }
+  const price = raw >= 1000 ? Math.round(raw) : Math.round(raw * 1000);
+  const targetId = $("itCat").value;
+  const from = MENU.find(c => c.id === editCat), to = MENU.find(c => c.id === targetId);
+  const old = editIdx >= 0 ? from.items[editIdx] : null;
+  const item = { name, price, desc: $("itDesc").value.trim(), img: old ? (old.img || "") : "", rec: $("itRec").checked };
+  if (old && from === to) from.items[editIdx] = item;
+  else { if (old) from.items.splice(editIdx, 1); to.items.push(item); }
+  persist(); itemDlg.close();
+  if (to.id !== current) select(to.id); else { renderCats(); renderList(); }
+});
 
 /* ===== GAME PROMO =====
    Ubah angka di CONFIG untuk mengatur tingkat kesulitan. Pemenang hanya diminta menunjukkan layar ke kasir. */
